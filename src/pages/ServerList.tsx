@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Sidebar} from "../components/Sidebar.tsx";
 import {Server} from "bbr-api";
-import bbrApiClient from "../Api.ts";
+import bbrApiClient from "../utils/Api.ts";
 import {
     ServerListFilterLabel,
     ServerListFilterWrapper,
@@ -12,6 +12,7 @@ import {
     ServerListTableRow,
 } from "../styles/ServerList.ts";
 import {ContentWrapper} from "../styles/PageContent.ts";
+import {toast} from "react-toastify";
 
 const columns = [
     "Name",
@@ -32,7 +33,6 @@ const columns = [
 
 function ServerList() {
     const [servers, setServers] = useState<Server[]>([]);
-    const [autoRefresh, setAutoRefresh] = useState(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [sortKey, setSortKey] = useState<string | null>("Name");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -40,17 +40,37 @@ function ServerList() {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        fetchData();
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "r") {
+                toast.promise(fetchData(), {
+                    pending: "Refreshing server stats...",
+                    success: "Refreshed!",
+                    error: "Error refreshing servers",
+                });
+            }
+        };
 
-        let intervalId: number | null = null;
-        if (autoRefresh) {
-            intervalId = setInterval(fetchData, 10000); // 10 seconds
-        }
+        toast.promise(fetchData(), {
+            error: "Error fetching servers",
+        }).then(() => {
+            toast.info("Press R to refresh server stats");
+        });
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        const interval = setInterval(() => {
+            toast.promise(fetchData(), {
+                pending: "Refreshing...",
+                success: "Refreshed!",
+                error: "Error refreshing servers",
+            });
+        }, 1000 * 60 * 5);
 
         return () => {
-            if (intervalId) clearInterval(intervalId);
+            window.removeEventListener("keydown", handleKeyDown);
+            clearInterval(interval);
         };
-    }, [autoRefresh]);
+    }, []);
 
     const fetchData = async () => {
         try {
@@ -106,39 +126,31 @@ function ServerList() {
         <div>
             <Sidebar/>
             <ContentWrapper>
-
-                <h1>Server List</h1>
-                <div>
-                    <ServerListFilterWrapper>
-                        <ServerListFilterLabel>
-                            Search:
-                            <ServerListSearchInput type="text" value={searchTerm} onChange={handleSearchChange}/>
-                        </ServerListFilterLabel>
-                    </ServerListFilterWrapper>
-                    <label>
-                        Auto Refresh (10s):
-                        <input
-                            type="checkbox"
-                            checked={autoRefresh}
-                            onChange={() => setAutoRefresh(!autoRefresh)}
-                        />
-                    </label>
-                </div>
-                <ServerListTable>
-                    {loading ? (
-                        <tbody>
-                        <tr>
-                            <td colSpan={columns.length}>Loading...</td>
-                        </tr>
-                        </tbody>
-                    ) : error ? (
-                        <tbody>
-                        <tr>
-                            <td colSpan={columns.length}>Error loading servers</td>
-                        </tr>
-                        </tbody>
-                    ) : (
-                        <>
+                {loading ? (
+                    <tbody>
+                    <tr>
+                        <td colSpan={columns.length}>Loading...</td>
+                    </tr>
+                    </tbody>
+                ) : error ? (
+                    <tbody>
+                    <tr>
+                        <td colSpan={columns.length}>Error loading servers</td>
+                    </tr>
+                    </tbody>
+                ) : (
+                    <>
+                        <h1>Server List</h1>
+                        <div>
+                            <ServerListFilterWrapper>
+                                <ServerListFilterLabel>
+                                    Search:
+                                    <ServerListSearchInput type="text" value={searchTerm}
+                                                           onChange={handleSearchChange}/>
+                                </ServerListFilterLabel>
+                            </ServerListFilterWrapper>
+                        </div>
+                        <ServerListTable>
                             <thead>
                             <tr>
                                 {columns.map((column) => (
@@ -168,9 +180,9 @@ function ServerList() {
                                 </ServerListTableRow>
                             ))}
                             </tbody>
-                        </>
-                    )}
-                </ServerListTable>
+                        </ServerListTable>
+                    </>
+                )}
             </ContentWrapper>
         </div>
     );

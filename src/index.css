@@ -1,36 +1,45 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
 
-  background-color: var(--background);
-  color: var(--text);
+    background-color: var(--background);
+    color: var(--text);
 
-  --text: #ffffff;
-  --background: #0B1014;
-  --primary: #00d4ff;
-  --secondary: #1a2832;
-  --accent: #6aa3af;
+    --text: #ffffff;
+    --background: #0B1014;
+    --primary: #00d4ff;
+    --secondary: #1a2832;
+    --accent: #6aa3af;
+
+    /* Toastify */
+    --toastify-color-dark: var(--secondary) !important;
+    --toastify-color-success: var(--primary) !important;
+    --toastify-color-error: #ff0000 !important;
+    --toastify-color-info: #00ff00 !important;
+    --toastify-color-warning: #ffff00 !important;
+
+    --toastify-color-progress-success: var(--primary) !important;
 }
 
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 
-  list-style: none;
-  text-decoration: none;
+    list-style: none;
+    text-decoration: none;
 
-  font-family: Roboto, sans-serif;
+    font-family: Roboto, sans-serif;
 }
 
 body {
-  margin-left: 64px;
+    margin-left: 64px;
 }
 
 
@@ -38,10 +47,10 @@ body {
 
 /* Invisible scrollbar */
 ::-webkit-scrollbar {
-  width: 0;
-  background: transparent;
+    width: 0;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb, ::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }

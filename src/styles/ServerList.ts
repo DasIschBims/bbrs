@@ -66,6 +66,16 @@ export const ServerListFilterLabel = styled.label`
 
 export const ServerListSearchInput = styled.input`
   margin-left: 10px;
+  background-color: var(--background);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  padding: 8px;
+  border-radius: 4px;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
 `;
 
 export const ServerListSelect = styled.select`
