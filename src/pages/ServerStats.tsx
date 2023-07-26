@@ -203,8 +203,6 @@ function ServerStats() {
         return acc;
     }, {} as Record<string, number>);
 
-    console.log(mapSizeServerCount)
-
     const gameModePlayerPieData = createPieData("Game Mode Player Count", gameModePlayerCount, gameModeColorMap)
     const gameModeServersPieData = createPieData("Game Mode Server Count", gameModeServerCount, gameModeColorMap)
     const regionPlayerPieData = createPieData("Region Player Count", regionPlayerCount, regionColorMap)
