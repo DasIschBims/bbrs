@@ -254,7 +254,7 @@ function ServerStats() {
                                                 <LegendItem key={gamemode}>
                                                     <LegendColor color={gameModeColorMap[gamemode]}/>
                                                     <LegendText>
-                                                        {gamemode}: <strong>{count}</strong>
+                                                        <p>{gamemode}: <strong>{count}</strong></p>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -270,7 +270,7 @@ function ServerStats() {
                                                 <LegendItem key={gamemode}>
                                                     <LegendColor color={gameModeColorMap[gamemode]}/>
                                                     <LegendText>
-                                                        {gamemode}: <strong>{count}</strong>
+                                                        <p>{gamemode}: <strong>{count}</strong></p>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -286,7 +286,7 @@ function ServerStats() {
                                                 <LegendItem key={region}>
                                                     <LegendColor color={regionColorMap[region]}/>
                                                     <LegendText>
-                                                        {region}: <strong>{count}</strong>
+                                                        <p>{region}: <strong>{count}</strong></p>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -302,7 +302,7 @@ function ServerStats() {
                                                 <LegendItem key={region}>
                                                     <LegendColor color={regionColorMap[region]}/>
                                                     <LegendText>
-                                                        {region}: <strong>{count}</strong>
+                                                        <p>{region}: <strong>{count}</strong></p>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -318,7 +318,7 @@ function ServerStats() {
                                                 <LegendItem key={map}>
                                                     <LegendColor color={mapColorMap[map]}/>
                                                     <LegendText>
-                                                        {map}: <strong>{count}</strong>
+                                                        <p>{map}: <strong>{count}</strong></p>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
