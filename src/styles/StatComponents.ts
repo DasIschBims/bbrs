@@ -13,7 +13,7 @@ export const StatsContainer = styled.div`
 
 export const PieContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(425px, 1fr));
   gap: 1rem;
   width: 100%;
   margin-top: 1rem;
@@ -21,7 +21,7 @@ export const PieContainer = styled.div`
 
 export const CardContainer = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(425px, 1fr));
     gap: 1rem;
     width: 100%;
 `;
@@ -70,8 +70,7 @@ export const StatsPieChart = styled.div`
   flex-direction: column;
 
   & > canvas {
-    width: 12vh !important;
-    height: 12vh !important;
+    scale: 0.9;
   }
 `;
 
@@ -79,7 +78,7 @@ export const StatsPieChartLegend = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   grid-gap: 0.2rem;
-  max-width: 400px;
+  max-width: 420px;
   margin-top: 1rem;
 `;
 
