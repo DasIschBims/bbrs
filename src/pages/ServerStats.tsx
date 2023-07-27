@@ -8,7 +8,7 @@ import {
     CardContainer,
     LegendColor,
     LegendItem,
-    LegendText,
+    LegendText, PieChartWrapper,
     PieContainer,
     StatChartTitle,
     StatsCard,
@@ -253,11 +253,13 @@ function ServerStats() {
                                 <StatsPieChartContainer>
                                     <StatChartTitle>Game Mode Player Count</StatChartTitle>
                                     <StatsPieChart>
-                                        <Pie data={gameModePlayerPieData}/>
+                                        <PieChartWrapper>
+                                            <Pie data={gameModePlayerPieData}/>
+                                        </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(gameModePlayerCount).map(([gamemode, count], index) => (
                                                 <LegendItem key={gamemode}>
-                                                    <LegendColor color={colorMap[index % colorMap.length]} />
+                                                    <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
                                                         <p>{gamemode}: <strong>{count}</strong></p>
                                                     </LegendText>
@@ -269,11 +271,13 @@ function ServerStats() {
                                 <StatsPieChartContainer>
                                     <StatChartTitle>Gamemode Server Count</StatChartTitle>
                                     <StatsPieChart>
-                                        <Pie data={gameModeServersPieData}/>
+                                        <PieChartWrapper>
+                                            <Pie data={gameModeServersPieData}/>
+                                        </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(gameModeServerCount).map(([gamemode, count], index) => (
                                                 <LegendItem key={gamemode}>
-                                                    <LegendColor color={colorMap[index % colorMap.length]} />
+                                                    <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
                                                         <p>{gamemode}: <strong>{count}</strong></p>
                                                     </LegendText>
@@ -285,11 +289,13 @@ function ServerStats() {
                                 <StatsPieChartContainer>
                                     <StatChartTitle>Region Player Count</StatChartTitle>
                                     <StatsPieChart>
-                                        <Pie data={regionPlayerPieData}/>
+                                        <PieChartWrapper>
+                                            <Pie data={regionPlayerPieData}/>
+                                        </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(regionPlayerCount).map(([region, count], index) => (
                                                 <LegendItem key={region}>
-                                                    <LegendColor color={colorMap[index % colorMap.length]} />
+                                                    <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
                                                         <p>{region}: <strong>{count}</strong></p>
                                                     </LegendText>
@@ -301,11 +307,13 @@ function ServerStats() {
                                 <StatsPieChartContainer>
                                     <StatChartTitle>Region Server Count</StatChartTitle>
                                     <StatsPieChart>
-                                        <Pie data={regionServerPieData}/>
+                                        <PieChartWrapper>
+                                            <Pie data={regionServerPieData}/>
+                                        </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(regionServerCount).map(([region, count], index) => (
                                                 <LegendItem key={region}>
-                                                    <LegendColor color={colorMap[index % colorMap.length]} />
+                                                    <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
                                                         <p>{region}: <strong>{count}</strong></p>
                                                     </LegendText>
@@ -317,11 +325,13 @@ function ServerStats() {
                                 <StatsPieChartContainer>
                                     <StatChartTitle>Map Player Count</StatChartTitle>
                                     <StatsPieChart>
-                                        <Pie data={mapPlayerPieData}/>
+                                        <PieChartWrapper>
+                                            <Pie data={mapPlayerPieData}/>
+                                        </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(mapPlayerCount).map(([map, count], index) => (
                                                 <LegendItem key={map}>
-                                                    <LegendColor color={colorMap[index % colorMap.length]} />
+                                                    <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
                                                         <p>{map}: <strong>{count}</strong></p>
                                                     </LegendText>
@@ -333,11 +343,13 @@ function ServerStats() {
                                 <StatsPieChartContainer>
                                     <StatChartTitle>Map Server Count</StatChartTitle>
                                     <StatsPieChart>
-                                        <Pie data={mapServerPieData}/>
+                                        <PieChartWrapper>
+                                            <Pie data={mapServerPieData}/>
+                                        </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(mapServerCount).map(([map, count], index) => (
                                                 <LegendItem key={map}>
-                                                    <LegendColor color={colorMap[index % colorMap.length]} />
+                                                    <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
                                                         <p>{map}: <strong>{count}</strong></p>
                                                     </LegendText>
@@ -349,11 +361,13 @@ function ServerStats() {
                                 <StatsPieChartContainer>
                                     <StatChartTitle>Map Size Count</StatChartTitle>
                                     <StatsPieChart>
-                                        <Pie data={mapSizePieData}/>
+                                        <PieChartWrapper>
+                                            <Pie data={mapSizePieData}/>
+                                        </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(mapSizeServerCount).map(([mapSize, count], index) => (
                                                 <LegendItem key={mapSize}>
-                                                    <LegendColor color={colorMap[index % colorMap.length]} />
+                                                    <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
                                                         <p>{mapSize}: <strong>{count}</strong></p>
                                                     </LegendText>

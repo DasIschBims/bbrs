@@ -68,11 +68,15 @@ export const StatsPieChart = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  
-  & > canvas {
-    width: 400px !important;
-    height: 400px !important;
-  }
+`;
+
+export const PieChartWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
 `;
 
 export const StatsPieChartLegend = styled.div`
