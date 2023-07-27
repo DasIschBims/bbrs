@@ -19,7 +19,7 @@ import {
     CardContainer,
     LegendColor,
     LegendItem,
-    LegendText, LineChartContainer, LineChartWrapper, PieChartWrapper,
+    LegendText, LineChartContainer, LineChartTitle, LineChartWrapper, PieChartWrapper,
     PieContainer,
     StatChartTitle,
     StatsCard,
@@ -149,19 +149,19 @@ function ServerStats() {
         toast.promise(fetchData(), {
             error: "Error fetching servers",
         }).then(() => {
-            toast.info("Press R to refresh server stats");
+            toast.info("Press ALT + R to refresh server stats");
         });
 
         let refreshInterval = setInterval(fetchDataAndToast, 1000 * 60);
 
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "r") {
+            if (e.key === "r" && e.altKey) {
                 fetchDataAndToast();
             }
         };
 
-        const handleVisibilityChange = () => {
-            if (document.visibilityState === "visible") {
+        const handleFocus = () => {
+            if (document.onfocus) {
                 refreshInterval = setInterval(fetchDataAndToast, 1000 * 60);
             } else {
                 clearInterval(refreshInterval);
@@ -169,11 +169,11 @@ function ServerStats() {
         };
 
         window.addEventListener("keydown", handleKeyDown);
-        document.addEventListener("visibilitychange", handleVisibilityChange);
+        document.addEventListener("focus", handleFocus);
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            document.removeEventListener("focus", handleFocus);
             clearInterval(refreshInterval);
         };
     }, []);
@@ -525,6 +525,7 @@ function ServerStats() {
                         <StatsContainer>
                             <LineChartContainer>
                                 <LineChartWrapper>
+                                    <LineChartTitle>Player Count</LineChartTitle>
                                     <Line data={playerLineChartData} options={{
                                         scales: {
                                             y: {
@@ -541,6 +542,7 @@ function ServerStats() {
                                     }}/>
                                 </LineChartWrapper>
                                 <LineChartWrapper>
+                                    <LineChartTitle>Servers</LineChartTitle>
                                     <Line data={serverLineChartData} options={{
                                         scales: {
                                             y: {

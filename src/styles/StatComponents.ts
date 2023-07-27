@@ -156,13 +156,16 @@ export const LineChartContainer = styled.div`
   width: 100%;
   margin-top: 1rem;
 
+  @media (min-width: 2000px) {
+    grid-row-gap: 3rem;
+  }
+
   @media (max-width: 2000px) {
     grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
   }
 
   @media (max-width: 1400px) {
     grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
-    gap: 3rem;
   }
 
   @media (max-width: 600px) {
@@ -170,4 +173,14 @@ export const LineChartContainer = styled.div`
     gap: 2.5rem;
     margin-bottom: 1.5rem;
   }
+`;
+
+export const LineChartTitle = styled.h3`
+    padding: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.8rem;
 `;
