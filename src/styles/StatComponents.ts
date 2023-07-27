@@ -26,7 +26,7 @@ export const CardContainer = styled.div`
     width: 100%;
 `;
 
-export const StatsCardLong = styled.div`
+export const StatsCard = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -68,9 +68,10 @@ export const StatsPieChart = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-
+  
   & > canvas {
-    scale: 0.9;
+    width: 400px !important;
+    height: 400px !important;
   }
 `;
 

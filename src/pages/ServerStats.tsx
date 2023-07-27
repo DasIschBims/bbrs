@@ -6,18 +6,22 @@ import bbrApiClient from "../utils/Api.ts";
 import {Chart, ArcElement, Tooltip} from 'chart.js'
 import {
     CardContainer,
-    LegendColor, LegendItem,
-    LegendText, PieContainer, StatChartTitle,
-    StatsCardLong,
+    LegendColor,
+    LegendItem,
+    LegendText,
+    PieContainer,
+    StatChartTitle,
+    StatsCard,
     StatsContainer,
     StatsPieChart,
     StatsPieChartContainer,
     StatsPieChartLegend
 } from "../styles/StatComponents.ts";
-import {HiOutlineUserGroup} from "react-icons/hi2";
 import {Pie} from "react-chartjs-2";
-import {HiOutlineClock} from "react-icons/hi";
 import {toast} from "react-toastify";
+import {HiOutlineServerStack, HiOutlineUserGroup, HiOutlineUserCircle, HiOutlineClock} from "react-icons/hi2";
+import {TbBuildingCommunity} from "react-icons/tb";
+import {AiOutlineCloudServer} from "react-icons/ai";
 
 Chart.register(ArcElement, Tooltip);
 
@@ -31,7 +35,7 @@ const colorMap: string[] = [
     "rgba(111,78,124,255)",
     "rgba(156,217,102,255)",
     "rgba(203,71,46,255)",
-]
+];
 
 const createPieData = (label: string, data: Record<string, number>) => ({
     type: "pie",
@@ -102,6 +106,10 @@ function ServerStats() {
 
     const playerCount = servers.reduce((acc, server) => acc + server.Players, 0);
     const queuedPlayers = servers.reduce((acc, server) => acc + server.QueuePlayers, 0);
+    const onlineServers = servers.length;
+    const maxPlayers = servers.reduce((acc, server) => acc + server.MaxPlayers, 0);
+    const officialServers = servers.filter(server => server.IsOfficial).length;
+    const communityServers = servers.filter(server => !server.IsOfficial).length;
 
     const gameModePlayerCount = servers.reduce((acc, server) => {
         const gamemode = server.Gamemode;
@@ -111,7 +119,6 @@ function ServerStats() {
         acc[gamemode] += server.Players;
         return acc;
     }, {} as Record<string, number>);
-
     const gameModeServerCount = servers.reduce((acc, server) => {
         const gamemode = server.Gamemode;
         if (!acc[gamemode]) {
@@ -120,7 +127,6 @@ function ServerStats() {
         acc[gamemode] += 1;
         return acc;
     }, {} as Record<string, number>);
-
     const regionPlayerCount = servers.reduce((acc, server) => {
         const region = server.Region;
         if (!acc[region]) {
@@ -129,7 +135,6 @@ function ServerStats() {
         acc[region] += server.Players;
         return acc;
     }, {} as Record<string, number>);
-
     const regionServerCount = servers.reduce((acc, server) => {
         const region = server.Region;
         if (!acc[region]) {
@@ -138,7 +143,6 @@ function ServerStats() {
         acc[region] += 1;
         return acc;
     }, {} as Record<string, number>);
-
     const mapPlayerCount = servers.reduce((acc, server) => {
         const map = server.Map;
         if (!acc[map]) {
@@ -147,7 +151,6 @@ function ServerStats() {
         acc[map] += server.Players;
         return acc;
     }, {} as Record<string, number>);
-
     const mapServerCount = servers.reduce((acc, server) => {
         const map = server.Map;
         if (!acc[map]) {
@@ -156,7 +159,6 @@ function ServerStats() {
         acc[map] += 1;
         return acc;
     }, {} as Record<string, number>);
-
     const mapSizeServerCount = servers.reduce((acc, server) => {
         const mapSize = server.MapSize;
         if (!acc[mapSize]) {
@@ -186,26 +188,66 @@ function ServerStats() {
                     <>
                         <StatsContainer>
                             <CardContainer>
-                                <StatsCardLong>
+                                <StatsCard>
                                     <div>
-                                        <h3>
+                                        <h4>
                                             <HiOutlineUserGroup/>
-                                            <span>Players</span>
-                                        </h3>
+                                            Players
+                                        </h4>
                                         <p>
                                             <strong>{playerCount}</strong>
                                         </p>
                                     </div>
                                     <div>
-                                        <h3>
+                                        <h4>
                                             <HiOutlineClock/>
-                                            <span>Queued Players</span>
-                                        </h3>
+                                            Queued Players
+                                        </h4>
                                         <p>
                                             <strong>{queuedPlayers}</strong>
                                         </p>
                                     </div>
-                                </StatsCardLong>
+                                </StatsCard>
+                                <StatsCard>
+                                    <div>
+                                        <h4>
+                                            <HiOutlineServerStack/>
+                                            Server Count
+                                        </h4>
+                                        <p>
+                                            <strong>{onlineServers}</strong>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4>
+                                            <HiOutlineUserCircle/>
+                                            Server Capacity
+                                        </h4>
+                                        <p>
+                                            <strong>{maxPlayers}</strong>
+                                        </p>
+                                    </div>
+                                </StatsCard>
+                                <StatsCard>
+                                    <div>
+                                        <h4>
+                                            <AiOutlineCloudServer/>
+                                            Official Servers
+                                        </h4>
+                                        <p>
+                                            <strong>{officialServers}</strong>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4>
+                                            <TbBuildingCommunity/>
+                                            Community Servers
+                                        </h4>
+                                        <p>
+                                            <strong>{communityServers}</strong>
+                                        </p>
+                                    </div>
+                                </StatsCard>
                             </CardContainer>
                             <PieContainer>
                                 <StatsPieChartContainer>
