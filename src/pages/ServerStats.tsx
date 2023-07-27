@@ -3,12 +3,23 @@ import {ContentWrapper} from "../styles/PageContent.ts";
 import {Server} from "bbr-api";
 import {useEffect, useState} from "react";
 import bbrApiClient from "../utils/Api.ts";
-import {Chart, ArcElement, Tooltip} from 'chart.js'
+import {
+    Chart,
+    ArcElement,
+    LineElement,
+    Tooltip,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    Title,
+    Legend,
+    Filler
+} from 'chart.js'
 import {
     CardContainer,
     LegendColor,
     LegendItem,
-    LegendText, PieChartWrapper,
+    LegendText, LineChartContainer, LineChartWrapper, PieChartWrapper,
     PieContainer,
     StatChartTitle,
     StatsCard,
@@ -17,13 +28,14 @@ import {
     StatsPieChartContainer,
     StatsPieChartLegend
 } from "../styles/StatComponents.ts";
-import {Pie} from "react-chartjs-2";
+import {Line, Pie} from "react-chartjs-2";
 import {toast} from "react-toastify";
 import {HiOutlineServerStack, HiOutlineUserGroup, HiOutlineUserCircle, HiOutlineClock} from "react-icons/hi2";
 import {TbBuildingCommunity} from "react-icons/tb";
 import {AiOutlineCloudServer} from "react-icons/ai";
+import {format} from "date-fns";
 
-Chart.register(ArcElement, Tooltip);
+Chart.register(ArcElement, LineElement, Tooltip, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const colorMap: string[] = [
     "rgba(54,162,235,255)",
@@ -53,20 +65,85 @@ const createPieData = (label: string, data: Record<string, number>) => ({
     ]
 });
 
+const pieOptions = {
+    plugins: {
+        legend: {
+            display: false,
+        }
+    }
+}
+
 function ServerStats() {
     const [servers, setServers] = useState<Server[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [playerLineChartData, setPlayerLineChartData] = useState({
+        labels: [] as string[],
+        datasets: [
+            {
+                label: "Player Count",
+                data: [] as number[],
+                borderColor: colorMap[0],
+                borderWidth: 2,
+                fill: true,
+                showLine: true,
+            },
+            {
+                label: "Max Server Capacity",
+                data: [] as number[],
+                borderColor: colorMap[1],
+                borderWidth: 2,
+                fill: true,
+                showLine: true,
+            },
+            {
+                label: "Queued Players",
+                data: [] as number[],
+                borderColor: colorMap[2],
+                borderWidth: 2,
+                fill: true,
+                showLine: true,
+            }
+        ],
+    });
+    const [serverLineChartData, setServerLineChartData] = useState({
+        labels: [] as string[],
+        datasets: [
+            {
+                label: "Server Count",
+                data: [] as number[],
+                borderColor: colorMap[0],
+                borderWidth: 2,
+                fill: true,
+                showLine: true,
+            },
+            {
+                label: "Official Servers",
+                data: [] as number[],
+                borderColor: colorMap[1],
+                borderWidth: 2,
+                fill: true,
+                showLine: true,
+            },
+            {
+                label: "Community Servers",
+                data: [] as number[],
+                borderColor: colorMap[2],
+                borderWidth: 2,
+                fill: true,
+                showLine: true,
+            }
+        ],
+    });
 
     useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "r") {
-                toast.promise(fetchData(), {
-                    pending: "Refreshing server stats...",
-                    success: "Refreshed!",
-                    error: "Error refreshing servers",
-                });
-            }
+        const fetchDataAndToast = () => {
+            toast.promise(fetchData(), {
+                pending: "Refreshing...",
+                success: "Refreshed!",
+                error: "Error refreshing servers",
+            }).then(() => {
+            });
         };
 
         toast.promise(fetchData(), {
@@ -75,21 +152,86 @@ function ServerStats() {
             toast.info("Press R to refresh server stats");
         });
 
-        window.addEventListener("keydown", handleKeyDown);
+        let refreshInterval = setInterval(fetchDataAndToast, 1000 * 60);
 
-        const interval = setInterval(() => {
-            toast.promise(fetchData(), {
-                pending: "Refreshing...",
-                success: "Refreshed!",
-                error: "Error refreshing servers",
-            });
-        }, 1000 * 60 * 5);
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "r") {
+                fetchDataAndToast();
+            }
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                refreshInterval = setInterval(fetchDataAndToast, 1000 * 60);
+            } else {
+                clearInterval(refreshInterval);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("visibilitychange", handleVisibilityChange);
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
-            clearInterval(interval);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            clearInterval(refreshInterval);
         };
     }, []);
+
+    useEffect(() => {
+        const updatePlayerLineChartData = () => {
+            try {
+                setPlayerLineChartData((prevChartData) => ({
+                    ...prevChartData,
+                    labels: [...prevChartData.labels, format(new Date(), 'HH:mm')],
+                    datasets: [
+                        {
+                            ...prevChartData.datasets[0],
+                            data: [...prevChartData.datasets[0].data, servers.reduce((acc, server) => acc + server.Players, 0)],
+                        },
+                        {
+                            ...prevChartData.datasets[1],
+                            data: [...prevChartData.datasets[1].data, servers.reduce((acc, server) => acc + server.MaxPlayers, 0)],
+                        },
+                        {
+                            ...prevChartData.datasets[2],
+                            data: [...prevChartData.datasets[2].data, servers.reduce((acc, server) => acc + server.QueuePlayers, 0)],
+                        }
+                    ],
+                }));
+            } catch (e) {
+                console.error("Error updating player line chart data: ", e);
+            }
+        };
+
+        const updateServerLineChartData = () => {
+            try {
+                setServerLineChartData((prevChartData) => ({
+                    ...prevChartData,
+                    labels: [...prevChartData.labels, format(new Date(), 'HH:mm')],
+                    datasets: [
+                        {
+                            ...prevChartData.datasets[0],
+                            data: [...prevChartData.datasets[0].data, servers.length],
+                        },
+                        {
+                            ...prevChartData.datasets[1],
+                            data: [...prevChartData.datasets[1].data, servers.filter(server => server.IsOfficial).length],
+                        },
+                        {
+                            ...prevChartData.datasets[2],
+                            data: [...prevChartData.datasets[2].data, servers.filter(server => !server.IsOfficial).length],
+                        }
+                    ],
+                }));
+            } catch (e) {
+                console.error("Error updating server line chart data: ", e);
+            }
+        }
+
+        updatePlayerLineChartData();
+        updateServerLineChartData();
+    }, [servers]);
 
     const fetchData = async () => {
         try {
@@ -249,19 +391,21 @@ function ServerStats() {
                                     </div>
                                 </StatsCard>
                             </CardContainer>
+                        </StatsContainer>
+                        <StatsContainer>
                             <PieContainer>
                                 <StatsPieChartContainer>
                                     <StatChartTitle>Game Mode Player Count</StatChartTitle>
                                     <StatsPieChart>
                                         <PieChartWrapper>
-                                            <Pie data={gameModePlayerPieData}/>
+                                            <Pie data={gameModePlayerPieData} options={pieOptions}/>
                                         </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(gameModePlayerCount).map(([gamemode, count], index) => (
                                                 <LegendItem key={gamemode}>
                                                     <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
-                                                        <p>{gamemode}: <strong>{count}</strong></p>
+                                                        <span>{gamemode}: <strong>{count}</strong></span>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -272,14 +416,14 @@ function ServerStats() {
                                     <StatChartTitle>Gamemode Server Count</StatChartTitle>
                                     <StatsPieChart>
                                         <PieChartWrapper>
-                                            <Pie data={gameModeServersPieData}/>
+                                            <Pie data={gameModeServersPieData} options={pieOptions}/>
                                         </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(gameModeServerCount).map(([gamemode, count], index) => (
                                                 <LegendItem key={gamemode}>
                                                     <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
-                                                        <p>{gamemode}: <strong>{count}</strong></p>
+                                                        <span>{gamemode}: <strong>{count}</strong></span>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -290,14 +434,14 @@ function ServerStats() {
                                     <StatChartTitle>Region Player Count</StatChartTitle>
                                     <StatsPieChart>
                                         <PieChartWrapper>
-                                            <Pie data={regionPlayerPieData}/>
+                                            <Pie data={regionPlayerPieData} options={pieOptions}/>
                                         </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(regionPlayerCount).map(([region, count], index) => (
                                                 <LegendItem key={region}>
                                                     <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
-                                                        <p>{region}: <strong>{count}</strong></p>
+                                                        <span>{region}: <strong>{count}</strong></span>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -308,14 +452,14 @@ function ServerStats() {
                                     <StatChartTitle>Region Server Count</StatChartTitle>
                                     <StatsPieChart>
                                         <PieChartWrapper>
-                                            <Pie data={regionServerPieData}/>
+                                            <Pie data={regionServerPieData} options={pieOptions}/>
                                         </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(regionServerCount).map(([region, count], index) => (
                                                 <LegendItem key={region}>
                                                     <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
-                                                        <p>{region}: <strong>{count}</strong></p>
+                                                        <span>{region}: <strong>{count}</strong></span>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -326,14 +470,14 @@ function ServerStats() {
                                     <StatChartTitle>Map Player Count</StatChartTitle>
                                     <StatsPieChart>
                                         <PieChartWrapper>
-                                            <Pie data={mapPlayerPieData}/>
+                                            <Pie data={mapPlayerPieData} options={pieOptions}/>
                                         </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(mapPlayerCount).map(([map, count], index) => (
                                                 <LegendItem key={map}>
                                                     <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
-                                                        <p>{map}: <strong>{count}</strong></p>
+                                                        <span>{map}: <strong>{count}</strong></span>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -344,14 +488,14 @@ function ServerStats() {
                                     <StatChartTitle>Map Server Count</StatChartTitle>
                                     <StatsPieChart>
                                         <PieChartWrapper>
-                                            <Pie data={mapServerPieData}/>
+                                            <Pie data={mapServerPieData} options={pieOptions}/>
                                         </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(mapServerCount).map(([map, count], index) => (
                                                 <LegendItem key={map}>
                                                     <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
-                                                        <p>{map}: <strong>{count}</strong></p>
+                                                        <span>{map}: <strong>{count}</strong></span>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -362,14 +506,14 @@ function ServerStats() {
                                     <StatChartTitle>Map Size Count</StatChartTitle>
                                     <StatsPieChart>
                                         <PieChartWrapper>
-                                            <Pie data={mapSizePieData}/>
+                                            <Pie data={mapSizePieData} options={pieOptions}/>
                                         </PieChartWrapper>
                                         <StatsPieChartLegend>
                                             {Object.entries(mapSizeServerCount).map(([mapSize, count], index) => (
                                                 <LegendItem key={mapSize}>
                                                     <LegendColor color={colorMap[index % colorMap.length]}/>
                                                     <LegendText>
-                                                        <p>{mapSize}: <strong>{count}</strong></p>
+                                                        <span>{mapSize}: <strong>{count}</strong></span>
                                                     </LegendText>
                                                 </LegendItem>
                                             ))}
@@ -377,6 +521,42 @@ function ServerStats() {
                                     </StatsPieChart>
                                 </StatsPieChartContainer>
                             </PieContainer>
+                        </StatsContainer>
+                        <StatsContainer>
+                            <LineChartContainer>
+                                <LineChartWrapper>
+                                    <Line data={playerLineChartData} options={{
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            },
+                                            x: {
+                                                display: true,
+                                                title: {
+                                                    display: true,
+                                                    text: "Time (24hr)",
+                                                }
+                                            }
+                                        }
+                                    }}/>
+                                </LineChartWrapper>
+                                <LineChartWrapper>
+                                    <Line data={serverLineChartData} options={{
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            },
+                                            x: {
+                                                display: true,
+                                                title: {
+                                                    display: true,
+                                                    text: "Time (24hr)",
+                                                }
+                                            }
+                                        }
+                                    }}/>
+                                </LineChartWrapper>
+                            </LineChartContainer>
                         </StatsContainer>
                     </>
                 )}

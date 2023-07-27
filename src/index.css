@@ -42,10 +42,14 @@ body {
     margin-left: 64px;
 }
 
+@media (max-width: 600px) {
+    body {
+        margin-left: 32px;
+    }
+}
+
 
 /* Scroll bar */
-
-/* Invisible scrollbar */
 ::-webkit-scrollbar {
     width: 0;
     background: transparent;

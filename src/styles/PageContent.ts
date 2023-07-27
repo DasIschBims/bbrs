@@ -9,4 +9,10 @@ export const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+
+  @media (max-width: 600px) {
+    > * {
+      font-size: calc(0.8rem + 0.5vw);
+    }
+  }
 `;

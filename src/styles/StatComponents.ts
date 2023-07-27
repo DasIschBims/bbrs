@@ -17,13 +17,21 @@ export const PieContainer = styled.div`
   gap: 1rem;
   width: 100%;
   margin-top: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  }
 `;
 
 export const CardContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(425px, 1fr));
-    gap: 1rem;
-    width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(425px, 1fr));
+  gap: 1rem;
+  width: 100%;
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  }
 `;
 
 export const StatsCard = styled.div`
@@ -54,6 +62,16 @@ export const StatsCard = styled.div`
       height: 1.5rem;
     }
   }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    justify-content: center;
+
+    & > * {
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+  }
 `;
 
 export const StatsPieChartContainer = styled.div`
@@ -71,12 +89,17 @@ export const StatsPieChart = styled.div`
 `;
 
 export const PieChartWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 400px;
-    height: 400px;
-    margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    width: 300px;
+    height: 300px;
+  }
 `;
 
 export const StatsPieChartLegend = styled.div`
@@ -116,4 +139,35 @@ export const StatChartTitle = styled.h3`
   width: 100%;
   text-align: center;
   margin-bottom: 0.8rem;
+`;
+
+export const LineChartWrapper = styled.div`
+  background-color: var(--secondary);
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0.8rem;
+  height: 100%;
+`;
+
+export const LineChartContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(850px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  margin-top: 1rem;
+
+  @media (max-width: 2000px) {
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  }
+
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+    gap: 3rem;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
 `;
