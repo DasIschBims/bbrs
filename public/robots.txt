@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://bbrs.fruits.pw/sitemap.xml
