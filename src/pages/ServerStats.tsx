@@ -73,6 +73,8 @@ const pieOptions = {
     }
 }
 
+let refreshInterval: number;
+
 function ServerStats() {
     const [servers, setServers] = useState<Server[]>([]);
     const [loading, setLoading] = useState(true);
@@ -137,6 +139,8 @@ function ServerStats() {
     });
 
     useEffect(() => {
+        let isFocused = document.hasFocus();
+
         const fetchDataAndToast = () => {
             toast.promise(fetchData(), {
                 pending: "Refreshing...",
@@ -152,7 +156,11 @@ function ServerStats() {
             toast.info("Press ALT + R to refresh server stats");
         });
 
-        let refreshInterval = setInterval(fetchDataAndToast, 1000 * 60);
+        refreshInterval = setInterval(() => {
+            if (isFocused) {
+                fetchDataAndToast();
+            }
+        }, 1000 * 60);
 
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "r" && e.altKey) {
@@ -161,19 +169,21 @@ function ServerStats() {
         };
 
         const handleFocus = () => {
-            if (document.onfocus) {
-                refreshInterval = setInterval(fetchDataAndToast, 1000 * 60);
-            } else {
-                clearInterval(refreshInterval);
+            isFocused = document.hasFocus();
+
+            if (isFocused) {
+                fetchDataAndToast();
             }
         };
 
         window.addEventListener("keydown", handleKeyDown);
-        document.addEventListener("focus", handleFocus);
+        window.addEventListener("focus", handleFocus);
+        window.addEventListener("blur", handleFocus);
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
-            document.removeEventListener("focus", handleFocus);
+            window.removeEventListener("focus", handleFocus);
+            window.removeEventListener("blur", handleFocus);
             clearInterval(refreshInterval);
         };
     }, []);
